@@ -1,0 +1,11 @@
+[package]
+name = "file-browser"
+version = "0.1.0"
+edition = "2021"
+
+[lib]
+name="file_browser"
+crate-type = ["dylib"]
+
+[dependencies]
+rfd = "0.11.4"
