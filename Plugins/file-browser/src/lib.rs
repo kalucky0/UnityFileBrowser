@@ -38,11 +38,39 @@ pub extern "C" fn open_file_dialog(
         Ok(c_str) => c_str,
         Err(_) => return 0 as *const c_char,
     };
-    let pntr = c_str.into_raw();
+    let ptr = c_str.into_raw();
     unsafe {
-        STRING_POINTER = pntr;
+        STRING_POINTER = ptr;
     }
-    return pntr;
+    return ptr;
+}
+
+#[no_mangle]
+pub extern "C" fn open_folder_dialog(
+    title: *const c_char,
+    dir: *const c_char,
+    multiple: bool,
+) -> *const c_char {
+    let title = c_char_to_string(title);
+    let dir = c_char_to_string(dir);
+
+    let files = get_folder_paths(title, dir, multiple);
+
+    let mut paths = String::new();
+    for file in files {
+        paths.push_str(file.to_str().unwrap());
+        paths.push_str(";");
+    }
+
+    let c_str = match CString::new(paths) {
+        Ok(c_str) => c_str,
+        Err(_) => return 0 as *const c_char,
+    };
+    let ptr = c_str.into_raw();
+    unsafe {
+        STRING_POINTER = ptr;
+    }
+    return ptr;
 }
 
 fn get_file_paths(
@@ -65,6 +93,31 @@ fn get_file_paths(
             None => return Vec::new(),
         },
         false => match dialog.pick_file() {
+            Some(file) => vec![file],
+            None => return Vec::new(),
+        },
+    }
+}
+
+fn get_folder_paths(
+    title: &str,
+    dir: &str,
+    multiple: bool,
+) -> Vec<PathBuf> {
+    let mut dialog = FileDialog::new();
+
+    if title.len() > 0 {
+        dialog = dialog.set_title(&title);
+    }
+    if dir.len() > 0 {
+        dialog = dialog.set_directory(&dir);
+    }
+    match multiple {
+        true => match dialog.pick_folders() {
+            Some(files) => files,
+            None => return Vec::new(),
+        },
+        false => match dialog.pick_folder() {
             Some(file) => vec![file],
             None => return Vec::new(),
         },
