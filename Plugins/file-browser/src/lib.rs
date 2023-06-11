@@ -73,14 +73,47 @@ pub extern "C" fn open_folder_dialog(
     return ptr;
 }
 
+#[no_mangle]
+pub extern fn open_save_dialog(
+    title: *const c_char,
+    dir: *const c_char,
+    name: *const c_char,
+    exts: *const c_char,
+) -> *const c_char {
+    let title = c_char_to_string(title);
+    let dir = c_char_to_string(dir);
+    let name = c_char_to_string(name);
+    let extensions = parse_file_types(exts);
+
+    let path = get_save_path(title, dir, name, extensions);
+
+    let path = match path.to_str() {
+        Some(path) => path,
+        None => return 0 as *const c_char,
+    };
+
+    let c_str = match CString::new(path) {
+        Ok(c_str) => c_str,
+        Err(_) => return 0 as *const c_char,
+    };
+    let ptr = c_str.into_raw();
+    unsafe {
+        STRING_POINTER = ptr;
+    }
+    return ptr;
+}
+
 fn get_file_paths(
     title: &str,
     dir: &str,
     extensions: Vec<&'static str>,
     multiple: bool,
 ) -> Vec<PathBuf> {
-    let mut dialog = FileDialog::new().add_filter("Files", &extensions);
+    let mut dialog = FileDialog::new();
 
+    if extensions.len() > 0 {
+        dialog = dialog.add_filter("Files", &extensions);
+    }
     if title.len() > 0 {
         dialog = dialog.set_title(&title);
     }
@@ -121,6 +154,32 @@ fn get_folder_paths(
             Some(file) => vec![file],
             None => return Vec::new(),
         },
+    }
+}
+
+fn get_save_path(
+    title: &str,
+    dir: &str,
+    name: &str,
+    extensions: Vec<&'static str>,
+) -> PathBuf {
+    let mut dialog = FileDialog::new();
+
+    if extensions.len() > 0 {
+        dialog = dialog.add_filter("Files", &extensions);
+    }
+    if title.len() > 0 {
+        dialog = dialog.set_title(&title);
+    }
+    if dir.len() > 0 {
+        dialog = dialog.set_directory(&dir);
+    }
+    if name.len() > 0 {
+        dialog = dialog.set_file_name(&name);
+    }
+    match dialog.save_file() {
+        Some(file) => file,
+        None => return PathBuf::new(),
     }
 }
 
