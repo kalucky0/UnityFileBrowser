@@ -1,10 +1,11 @@
 {
     "name": "dev.kalucky0.filebrowser",
     "displayName": "Unity File Browser",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "unity": "2022.3",
     "description": "File Browser is a package for Unity that gives you the ability to open file dialogs for selecting files and folders on Windows, Mac and Linux.",
     "author": "kalucky0",
+    "documentationUrl": "https://github.com/kalucky0/UnityFileBrowser/wiki/FileBrowser-Class",
     "licensesUrl": "https://github.com/kalucky0/UnityFileBrowser/blob/master/LICENSE.md",
     "license": "MIT",
     "repository": {
