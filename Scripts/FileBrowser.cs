@@ -16,6 +16,9 @@ namespace UnityFileBrowser
 
         [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Auto)]
         private static extern IntPtr open_file_dialog(string title, string dir, string exts, bool multiple);
+
+        [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Auto)]
+        private static extern IntPtr open_folder_dialog(string title, string dir, bool multiple);
         
         /// <summary>
         /// Opens a file browser to select one or more files.
@@ -79,7 +82,10 @@ namespace UnityFileBrowser
         /// <returns>An array of paths to the selected folders.</returns>
         public static string[] OpenFolderBrowser(string title, string directory, bool multiple = false)
         {
-            return Array.Empty<string>();
+            var pathsPtr = open_folder_dialog(title, directory, multiple);
+            var paths = Marshal.PtrToStringAnsi(pathsPtr);
+            free_memory();
+            return paths != null ? paths.Split(';') : Array.Empty<string>();
         }
 
         /// <summary>
