@@ -5,7 +5,7 @@
 ![GitHub issues](https://img.shields.io/github/issues/kalucky0/UnityFileBrowser)
 
 > **Note**
-> This package is still in development and may not be stable. Use at your own risk. Linux and Windows support is not yet implemented.
+> This package is still in development and may not be stable. Use at your own risk. Linux support is not yet implemented.
 
 A simple package for Unity that allows you to open files and folders using the default file browser on the target device. It supports Windows, Mac and Linux and works both in the editor and at runtime.
 
@@ -33,6 +33,8 @@ var paths = FileBrowser.OpenFolderBrowser();
 // Open a file browser to select a save location
 var paths = FileBrowser.OpenSaveFileBrowser(new[] { "png", "jpg" });
 ```
+
+Read more about the API in the [documentation](https://github.com/kalucky0/UnityFileBrowser/wiki/FileBrowser-Class).
 
 ## License
 
