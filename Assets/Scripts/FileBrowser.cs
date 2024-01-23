@@ -14,13 +14,13 @@ namespace UnityFileBrowser
         [DllImport(LibName)]
         private static extern void free_memory();
 
-        [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Auto)]
+        [DllImport(LibName, CharSet = CharSet.Ansi)]
         private static extern IntPtr open_file_dialog(string title, string dir, string exts, bool multiple);
 
-        [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Auto)]
+        [DllImport(LibName, CharSet = CharSet.Ansi)]
         private static extern IntPtr open_folder_dialog(string title, string dir, bool multiple);
 
-        [DllImport(LibName, CallingConvention = CallingConvention.Cdecl, CharSet = CharSet.Auto)]
+        [DllImport(LibName, CharSet = CharSet.Ansi)]
         private static extern IntPtr open_save_dialog(string title, string dir, string name, string exts);
         
         /// <summary>
