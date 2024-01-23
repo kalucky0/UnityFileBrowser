@@ -11,8 +11,9 @@ pub extern "C" fn free_memory() {
         if STRING_POINTER.is_null() {
             return;
         }
-        CString::from_raw(STRING_POINTER)
-    };
+        let _ = CString::from_raw(STRING_POINTER);
+        STRING_POINTER = 0 as *mut c_char;
+    }
 }
 
 #[no_mangle]
@@ -115,7 +116,7 @@ fn get_file_paths(
         dialog = dialog.add_filter("Files", &extensions);
     }
     if title.len() > 0 {
-        dialog = dialog.set_title(&title);
+        dialog = dialog.set_title(title.to_string());
     }
     if dir.len() > 0 {
         dialog = dialog.set_directory(&dir);
@@ -140,7 +141,7 @@ fn get_folder_paths(
     let mut dialog = FileDialog::new();
 
     if title.len() > 0 {
-        dialog = dialog.set_title(&title);
+        dialog = dialog.set_title(title.to_string());
     }
     if dir.len() > 0 {
         dialog = dialog.set_directory(&dir);
@@ -169,13 +170,13 @@ fn get_save_path(
         dialog = dialog.add_filter("Files", &extensions);
     }
     if title.len() > 0 {
-        dialog = dialog.set_title(&title);
+        dialog = dialog.set_title(title.to_string());
     }
     if dir.len() > 0 {
         dialog = dialog.set_directory(&dir);
     }
     if name.len() > 0 {
-        dialog = dialog.set_file_name(&name);
+        dialog = dialog.set_file_name(name.to_string());
     }
     match dialog.save_file() {
         Some(file) => file,
